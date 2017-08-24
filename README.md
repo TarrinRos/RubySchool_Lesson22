@@ -1,1 +1,1 @@
-# RubySchool_Lesson22
+# RubySchool, Lesson 22
