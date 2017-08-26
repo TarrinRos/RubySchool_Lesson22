@@ -19,3 +19,13 @@ end
 get '/contacts' do
   erb :contacts
 end
+
+post '/visit' do
+  @username = params[:username]
+  @surname = params[:surname]
+  @phone = params[:phone]
+  @date_time = params[:date_time]
+  f = File.open './public/users.txt', 'a'
+  f.write "Имя: #{@username}, Фамилия: #{@surname}, Номер телефона #{@phone},Время посещения: #{@date_time}"
+  f.close
+end
