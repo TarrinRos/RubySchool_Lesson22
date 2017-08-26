@@ -37,7 +37,7 @@ post '/visit' do
   @after_visit = "Спасибо #{@username}, что Вы к нам записались"
 
   f = File.open './public/users.txt', 'a'
-  f.write "Имя: #{@first_name}, Фамилия: #{@surname}, Номер телефона #{@phone}, Время посещения: #{@date_time}, Мастер: #{@barber_master}" "\n"
+  f.write "Имя: #{@first_name}, Фамилия: #{@surname}, Номер телефона #{@phone}, Время посещения: #{@date_time}, Мастер: #{@barber_master}" '</p>'"\n"
   f.close
   erb :after_visit
 end
