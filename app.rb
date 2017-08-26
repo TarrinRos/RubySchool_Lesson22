@@ -29,7 +29,7 @@ get '/after_send' do
 end
 
 post '/visit' do
-  @username = params[:username]
+  @first_name = params[:first_name]
   @surname = params[:surname]
   @phone = params[:phone]
   @date_time = params[:date_time]
@@ -37,7 +37,7 @@ post '/visit' do
   @after_visit = "Спасибо #{@username}, что Вы к нам записались"
 
   f = File.open './public/users.txt', 'a'
-  f.write "Имя: #{@username}, Фамилия: #{@surname}, Номер телефона #{@phone},Время посещения: #{@date_time}, Мастер: #{@barber_master}"
+  f.write "Имя: #{@first_name}, Фамилия: #{@surname}, Номер телефона #{@phone},Время посещения: #{@date_time}, Мастер: #{@barber_master}"
   f.close
   erb :after_visit
 end
