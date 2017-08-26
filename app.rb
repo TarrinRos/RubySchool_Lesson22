@@ -37,7 +37,7 @@ post '/visit' do
   @after_visit = "Спасибо #{@username}, что Вы к нам записались"
 
   f = File.open './public/users.txt', 'a'
-  f.write "Имя: #{@first_name}, Фамилия: #{@surname}, Номер телефона #{@phone},Время посещения: #{@date_time}, Мастер: #{@barber_master}"
+  f.write "Имя: #{@first_name}, Фамилия: #{@surname}, Номер телефона #{@phone}, Время посещения: #{@date_time}, Мастер: #{@barber_master}" "\n"
   f.close
   erb :after_visit
 end
@@ -51,4 +51,23 @@ post '/contacts' do
   f.write "Почта: #{@email}, Сообщения: #{@message}"
   f.close
   erb :after_send
+end
+
+get '/login/form' do
+  erb :login_form
+end
+
+post '/login/form' do
+  @username = params[:username]
+  @password = params[:password]
+
+  if @username == 'admin' && @password == 'narn'
+    userstxt = File.open './public/users.txt', 'r'
+    @userstxt = userstxt.read
+    userstxt.close
+    erb :admin_panel
+  else
+    @error = 'Вы ввели не правильное имя или пароль'
+    erb :login_form
+  end
 end
