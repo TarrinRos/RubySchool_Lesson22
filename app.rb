@@ -57,6 +57,10 @@ get '/login/form' do
   erb :login_form
 end
 
+get '/logout' do
+  erb :logout
+end
+
 post '/login/form' do
   @username = params[:username]
   @password = params[:password]
