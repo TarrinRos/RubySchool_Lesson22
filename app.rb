@@ -28,16 +28,25 @@ get '/after_send' do
   erb :after_send
 end
 
+get '/login/form' do
+  erb :login_form
+end
+
+get '/logout' do
+  erb :logout
+end
+
 post '/visit' do
   @first_name = params[:first_name]
   @surname = params[:surname]
   @phone = params[:phone]
   @date_time = params[:date_time]
   @barber_master = params[:barber_master]
+  @colorpicker = params[:colorpicker]
   @after_visit = "Спасибо #{@username}, что Вы к нам записались"
 
   f = File.open './public/users.txt', 'a'
-  f.write "Имя: #{@first_name}, Фамилия: #{@surname}, Номер телефона #{@phone}, Время посещения: #{@date_time}, Мастер: #{@barber_master}" '</p>'"\n"
+  f.write "Имя: #{@first_name}, Фамилия: #{@surname}, Номер телефона #{@phone}, Время посещения: #{@date_time}, Мастер: #{@barber_master}, Цвет: #{@colorpicker}" "\n"
   f.close
   erb :after_visit
 end
@@ -53,25 +62,23 @@ post '/contacts' do
   erb :after_send
 end
 
-get '/login/form' do
-  erb :login_form
-end
-
-get '/logout' do
-  erb :logout
-end
-
-post '/login/form' do
+post '/admin_panel' do
   @username = params[:username]
   @password = params[:password]
 
   if @username == 'admin' && @password == 'narn'
-    userstxt = File.open './public/users.txt', 'r'
-    @userstxt = userstxt.read
-    userstxt.close
     erb :admin_panel
   else
     @error = 'Вы ввели не правильное имя или пароль'
     erb :login_form
   end
+end
+
+get '/admin_panel' do
+  line = File.open './public/users.txt','r'
+  while a = line
+    @userstxt = a
+    erb :admin_panel
+  end
+  line.close
 end
