@@ -51,15 +51,10 @@ post '/visit' do
          surname: 'Введите фамилию',
          phone: 'Введите номер телефона',
          date_time: 'Введите время записи' }
-  # For each Par key+value
-  hh.each do |key, _value|
-    if params[key] == ''
-      # переменной @error присвоить значение value
-      @error = hh[key]
-      return erb :visit
-    end
-  end
-  # Запись в файл users.txt
+
+  @error = hh.select { |key, _value| params[key] == '' }.values.join(', ')
+  return erb :visit if @error != ''
+    # Запись в файл users.txt
   f = File.open './public/users.txt', 'a'
   f.write "Имя: #{@first_name}, Фамилия: #{@surname}, Номер телефона #{@phone}, Время посещения: #{@date_time}, Мастер: #{@barber_master}, Цвет: #{@colorpicker}" "\n"
   f.close
@@ -77,7 +72,7 @@ post '/contacts' do
   erb :after_send
 end
 
-post '/admin_panel ' do
+post '/admin_panel' do
   @username = params[:username]
   @password = params[:password]
 
@@ -93,3 +88,5 @@ get '/admin_panel' do
   @userstxt = File.read './public/users.txt'
   erb :admin_panel
 end
+
+def method_name; end
