@@ -45,6 +45,12 @@ post '/visit' do
   @colorpicker = params[:colorpicker]
   @after_visit = "Спасибо #{@username}, что Вы к нам записались"
 
+  # Проверка на ввод имени
+  if @first_name == ''
+    @error = 'Введите Ваше имя'
+    return erb :visit
+  end
+  # Запись в файл users.txt
   f = File.open './public/users.txt', 'a'
   f.write "Имя: #{@first_name}, Фамилия: #{@surname}, Номер телефона #{@phone}, Время посещения: #{@date_time}, Мастер: #{@barber_master}, Цвет: #{@colorpicker}" "\n"
   f.close
@@ -62,7 +68,7 @@ post '/contacts' do
   erb :after_send
 end
 
-post '/admin_panel' do
+post '/admin_panel ' do
   @username = params[:username]
   @password = params[:password]
 
@@ -75,10 +81,6 @@ post '/admin_panel' do
 end
 
 get '/admin_panel' do
-  line = File.open './public/users.txt','r'
-  while a = line
-    @userstxt = a
-    erb :admin_panel
-  end
-  line.close
+  @userstxt = File.read './public/users.txt'
+  erb :admin_panel
 end

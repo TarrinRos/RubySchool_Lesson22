@@ -3,6 +3,13 @@
   Здесь Вы можете к нам записаться на прием:
 </p>
 <form action="/visit" method="POST" role="form">
+  <!-- Правильное написание функции для JQuery -->
+  <script type="text/javascript">
+  // этот код (для выбора цвета) исполняется после загрузки ВСЕЙ страницы
+  $(function(){
+    $('#color').simplecolorpicker();
+  });
+  </script>
 
   <div class="form-group">
     <label>Ваше имя</label>
@@ -48,7 +55,3 @@
 
   <button type="submit" class="btn btn-warning">Записаться</button>
 </form>
-
-<script type="text/javascript">
-$('#color').simplecolorpicker();
-</script>
