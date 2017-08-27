@@ -45,10 +45,19 @@ post '/visit' do
   @colorpicker = params[:colorpicker]
   @after_visit = "Спасибо #{@username}, что Вы к нам записались"
 
-  # Проверка на ввод имени
-  if @first_name == ''
-    @error = 'Введите Ваше имя'
-    return erb :visit
+  # Проверка на пустые поля
+  # HASH (with a 'new 1.9 syntax')
+  hh = { first_name: 'Введите имя',
+         surname: 'Введите фамилию',
+         phone: 'Введите номер телефона',
+         date_time: 'Введите время записи' }
+  # For each Par key+value
+  hh.each do |key, _value|
+    if params[key] == ''
+      # переменной @error присвоить значение value
+      @error = hh[key]
+      return erb :visit
+    end
   end
   # Запись в файл users.txt
   f = File.open './public/users.txt', 'a'
