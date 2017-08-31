@@ -3,5 +3,7 @@
   Мы преклоняемся пред Вами и выдаем список записанных на экзекуцию:
 </p>
 <form action='/admin_panel' method='GET' class="form-inline well">
-<% @userstxt %>
+<% @userstxt.each do |line| %>
+<% puts "#{line}" %>
+<% end %>
 </form>

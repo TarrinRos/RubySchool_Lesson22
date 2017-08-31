@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'sinatra'
 require 'sinatra/reloader'
+require 'pony'
 
 get '/' do
   erb 'Hello! <a href="https://github.com/bootstrap-ruby/sinatra-bootstrap">Original</a> pattern has been modified for <a href="http://rubyschool.us/">Ruby School</a>!!!'
@@ -45,7 +46,7 @@ post '/visit' do
   @colorpicker = params[:colorpicker]
   @after_visit = "Спасибо #{@username}, что Вы к нам записались"
 
-  # Проверка на пустые поля
+  # Validating empty input
   # HASH (with a 'new 1.9 syntax')
   hh = { first_name: 'Введите имя',
          surname: 'Введите фамилию',
@@ -54,21 +55,44 @@ post '/visit' do
 
   @error = hh.select { |key, _value| params[key] == '' }.values.join(', ')
   return erb :visit if @error != ''
-    # Запись в файл users.txt
+  # Write to users.txt
   f = File.open './public/users.txt', 'a'
-  f.write "Имя: #{@first_name}, Фамилия: #{@surname}, Номер телефона #{@phone}, Время посещения: #{@date_time}, Мастер: #{@barber_master}, Цвет: #{@colorpicker}" "\n"
+  f.puts "Имя: #{@first_name}, Фамилия: #{@surname}, Номер телефона #{@phone}, Время посещения: #{@date_time}, Мастер: #{@barber_master}, Цвет: #{@colorpicker}"
   f.close
   erb :after_visit
 end
 
 post '/contacts' do
+  @usrname = params[:usrname]
   @email = params[:email]
   @message = params[:message]
   @after_send = 'Спасибо Вам, за Ваше сообщение.'
 
+  hh = { usrname: 'Вы не ввели свое имя',
+         email: 'Вы не ввели Ваш email',
+         message: 'Вы не написали нам сообщение' }
+  @error = hh.select { |key, _value| params[key] == '' }.values.join(', ')
+  return erb :contacts if @error != ''
+  # save local_copy message to contacts.txt
   f = File.open './public/contacts.txt', 'a'
-  f.write "Почта: #{@email}, Сообщения: #{@message}"
+  f.write "Имя: #{@usrname}, Почта: #{@email}, Сообщения: #{@message}"
   f.close
+  # send copy message to admins email
+  # Hash of sending params
+  Pony.mail(body: "Имя: #{@usrname}, Почта: #{@email}, Сообщения: #{@message}",
+            to: 'tarindis@gmail.com',
+            #  subject: params[:name] + 'has contacted you.',
+            via: :smtp,
+            via_options: {
+              address: 'smtp.gmail.com',
+              port: '587',
+              enable_starttls_auto: true,
+              user_name: 'tarlocaltest',
+              password: 'narn1983',
+              authentication: :plain, # :plain, :login, :cram_md5, no auth by default
+              domain: '127.0.0.1' # the HELO domain provided by the client to the server
+            })
+
   erb :after_send
 end
 
@@ -85,8 +109,6 @@ post '/admin_panel' do
 end
 
 get '/admin_panel' do
-  @userstxt = File.read './public/users.txt'
+  @userstxt = File.read(File.join('public', 'users.txt'))
   erb :admin_panel
 end
-
-def method_name; end
