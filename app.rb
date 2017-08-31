@@ -101,14 +101,10 @@ post '/admin_panel' do
   @password = params[:password]
 
   if @username == 'admin' && @password == 'narn'
+    @userstxt = File.readlines './public/users.txt'
     erb :admin_panel
   else
     @error = 'Вы ввели не правильное имя или пароль'
     erb :login_form
   end
-end
-
-get '/admin_panel' do
-  @userstxt = File.read(File.join('public', 'users.txt'))
-  erb :admin_panel
 end
