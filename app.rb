@@ -4,6 +4,7 @@ require 'rubygems'
 require 'sinatra'
 require 'sinatra/reloader'
 require 'pony'
+require 'sqlite3'
 
 get '/' do
   erb 'Hello! <a href="https://github.com/bootstrap-ruby/sinatra-bootstrap">Original</a> pattern has been modified for <a href="http://rubyschool.us/">Ruby School</a>!!!'
@@ -75,7 +76,7 @@ post '/contacts' do
   return erb :contacts if @error != ''
   # save local_copy message to contacts.txt
   f = File.open './public/contacts.txt', 'a'
-  f.write "Имя: #{@usrname}, Почта: #{@email}, Сообщения: #{@message}"
+  f.puts "Имя: #{@usrname}, Почта: #{@email}, Сообщения: #{@message}"
   f.close
   # send copy message to admins email
   # Hash of sending params
@@ -85,8 +86,7 @@ post '/contacts' do
             via: :smtp,
             via_options: {
               address: 'smtp.gmail.com',
-              port: '587',
-              enable_starttls_auto: true,
+              port: '465',
               user_name: 'tarlocaltest',
               password: 'narn1983',
               authentication: :plain, # :plain, :login, :cram_md5, no auth by default
@@ -101,7 +101,7 @@ post '/admin_panel' do
   @password = params[:password]
 
   if @username == 'admin' && @password == 'narn'
-    @userstxt = File.readlines './public/users.txt'
+    @userstxt = SQLite3::Database.new './public/tar_first_db.sqlite'
     erb :admin_panel
   else
     @error = 'Вы ввели не правильное имя или пароль'
